@@ -33,6 +33,9 @@ struct ContentView: View {
                     VStack(alignment: .leading) {
                         Text(item.nombre ?? "Sin nombre")
                             .font(.headline)
+                        Text(item.email ?? "Sin correo")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
                     }
                 }
             }
