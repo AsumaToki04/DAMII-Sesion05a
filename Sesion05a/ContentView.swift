@@ -15,17 +15,24 @@ struct ContentView: View {
     )
     private var usuarios: FetchedResults<Usuario>
     @State private var contador = 1
+    @State private var isLoading: Bool = false
     
     var body: some View {
         VStack {
             Button(action: {
-                agregarUsuario()
+                Task {
+                    await agregarUsuario()
+                }
             }) {
-                Text("Agregar usuario")
-                    .padding()
-                    .background(.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
+                if isLoading {
+                    ProgressView()
+                } else {
+                    Text("Agregar usuario")
+                        .padding()
+                        .background(.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
             }
             
             List {
@@ -47,8 +54,11 @@ struct ContentView: View {
         }
     }
     
-    private func agregarUsuario() {
-        viewContext.perform {
+    private func agregarUsuario() async {
+        isLoading = true
+        //Thread.sleep(forTimeInterval: 3) // pausa de 3 segundos
+        try? await Task.sleep(nanoseconds: 3_000_000_000)
+        await viewContext.perform {
             withAnimation {
                 let nuevoUsuario = Usuario(context: viewContext)
                 nuevoUsuario.id = UUID()
@@ -61,6 +71,7 @@ struct ContentView: View {
                     print("Error al guardar: \(error)")
                 }
             }
+            isLoading = false
         }
     }
 }
